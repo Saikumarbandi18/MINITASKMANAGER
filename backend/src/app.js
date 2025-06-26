@@ -2,18 +2,25 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { Pool } = require('pg');
+require('dotenv').config();
 
 const app = express();
-app.use(cors());
+
+// CORS configuration for production
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  credentials: true
+};
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
-// Configure your PostgreSQL connection
+// Configure your PostgreSQL connection using environment variables
 const pool = new Pool({
-  user: 'postgres',           //  PostgreSQL username
-  host: 'localhost',          //  DB host
-  database: 'taskmanager',    //  database name
-  password: 'Sai@1718',       //  password
-  port: 5432,                 //  PostgreSQL port
+  user: process.env.DB_USER || 'postgres',
+  host: process.env.DB_HOST || 'localhost',
+  database: process.env.DB_NAME || 'taskmanager',
+  password: process.env.DB_PASSWORD || 'Sai@1718',
+  port: process.env.DB_PORT || 5432,
 });
 
 // GET /tasks - Get all tasks

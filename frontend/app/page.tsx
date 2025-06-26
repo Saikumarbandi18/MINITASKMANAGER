@@ -8,6 +8,9 @@ interface Task {
   createdAt: string;
 }
 
+// API base URL from environment variables
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
@@ -22,7 +25,7 @@ export default function Home() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("http://localhost:4000/tasks");
+      const res = await fetch(`${API_BASE_URL}/tasks`);
       const data = await res.json();
       setTasks(data);
     } catch (err) {
@@ -41,7 +44,7 @@ export default function Home() {
     if (!newTitle.trim()) return;
     setError("");
     try {
-      const res = await fetch("http://localhost:4000/tasks", {
+      const res = await fetch(`${API_BASE_URL}/tasks`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: newTitle }),
@@ -58,7 +61,7 @@ export default function Home() {
   const deleteTask = async (id: number) => {
     setError("");
     try {
-      const res = await fetch(`http://localhost:4000/tasks/${id}`, { method: "DELETE" });
+      const res = await fetch(`${API_BASE_URL}/tasks/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error();
       fetchTasks();
     } catch {
@@ -79,7 +82,7 @@ export default function Home() {
     if (editingId === null) return;
     setError("");
     try {
-      const res = await fetch(`http://localhost:4000/tasks/${editingId}`, {
+      const res = await fetch(`${API_BASE_URL}/tasks/${editingId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: editingTitle, status: editingStatus }),
